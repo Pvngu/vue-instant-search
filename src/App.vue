@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { StarFilled, StarOutlined } from '@ant-design/icons-vue'
 import { GlobalSearchModal } from './index'
 
 type SearchItem = {
@@ -251,34 +250,22 @@ const handleToggleFavorite = (payload: { item: SearchItem; favorite: boolean }) 
     <GlobalSearchModal
       v-model:open="modalOpen"
       v-model:query="searchQuery"
-      title="Search people"
-      subtitle="Use the modal as a controlled, context-agnostic component."
       placeholder="Search by name, email, phone, or type"
       :favorites="favoritesByType"
       :results="resultsByType"
       :loading="false"
-      :shortcuts="{
-        up: 'ArrowUp',
-        down: 'ArrowDown',
-        enter: 'Enter',
-        close: 'Escape',
-      }"
-      :get-item-key="(item) => item.xid"
-      :get-item-title="(item) => item.full_name"
-      :get-item-subtitle="(item) => `${item.email} · ${item.phone_number}`"
-      :is-favorite="(item) => favoriteIds.has(item.xid)"
-      @select="handleSelect"
-      @toggle-favorite="handleToggleFavorite"
+      :get-item-key="(item) => (item as SearchItem).xid"
+      :get-item-title="(item) => (item as SearchItem).full_name"
+      :get-item-subtitle="(item) => `${(item as SearchItem).email} · ${(item as SearchItem).phone_number}`"
+      :is-favorite="(item) => favoriteIds.has((item as SearchItem).xid)"
+      @select="(payload) => handleSelect(payload as { item: SearchItem })"
+      @toggle-favorite="(payload) => handleToggleFavorite(payload as { item: SearchItem; favorite: boolean })"
       @search-input="(value) => console.info('search-input', value)"
     >
       <template #item-icon="{ item }">
-        <span class="custom-item-icon" :class="item.type === 'lead' ? 'lead' : 'customer'">
-          {{ item.type === 'lead' ? 'L' : 'C' }}
+        <span class="custom-item-icon" :class="(item as SearchItem).type === 'lead' ? 'lead' : 'customer'">
+          {{ (item as SearchItem).type === 'lead' ? 'L' : 'C' }}
         </span>
-      </template>
-
-      <template #footer>
-        Press ↑ ↓ to move, Enter to select, and Esc to close.
       </template>
     </GlobalSearchModal>
   </main>
