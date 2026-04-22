@@ -15,8 +15,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.js'),
-      name: 'CustomVueCalendar',
-      fileName: (format) => `laravue-package-template.${format}.js`
+      name: 'VueInstantSearch',
+      fileName: (format) => `vue-instant-search.${format}.js`
     },
     rollupOptions: {
       // Externalize BOTH vue and ant-design-vue

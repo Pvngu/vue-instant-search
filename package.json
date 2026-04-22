@@ -1,16 +1,16 @@
 {
-  "name": "@pvngu/laravue-package-template",
+  "name": "vue-instant-search",
   "version": "0.1.0",
   "type": "module",
   "files": [
     "dist"
   ],
-  "main": "./dist/laravue-package-template.umd.js",
-  "module": "./dist/laravue-package-template.es.js",
+  "main": "./dist/vue-instant-search.umd.js",
+  "module": "./dist/vue-instant-search.es.js",
   "exports": {
     ".": {
-      "import": "./dist/laravue-package-template.es.js",
-      "require": "./dist/laravue-package-template.umd.js"
+      "import": "./dist/vue-instant-search.es.js",
+      "require": "./dist/vue-instant-search.umd.js"
     }
   },
   "scripts": {
