@@ -259,23 +259,23 @@ defineExpose({
     wrap-class-name="global-search-modal"
     :width="600"
   >
-    <div class="flex flex-col">
-      <div class="flex items-center px-6 py-4 border-b! border-slate-200!">
-        <SearchOutlined class="mr-4 text-xl text-gray-700!" />
+    <div class="vis:flex vis:flex-col">
+      <div class="vis:flex vis:items-center vis:px-6 vis:py-4 vis:border-b! vis:border-slate-200!">
+        <SearchOutlined class="vis:mr-4 vis:text-xl vis:text-gray-700!" />
         <input
           ref="searchInputRef"
           :value="query"
-          class="flex-1 border-0 outline-0 text-lg! bg-transparent text-gray-700 placeholder:text-gray-300!"
+          class="vis:flex-1 vis:border-0 vis:outline-0 vis:text-lg! vis:bg-transparent vis:text-gray-700 vis:placeholder:text-gray-300!"
           :placeholder="placeholder"
           @keydown="handleInputKeydown"
           @input="handleSearch"
         />
-        <div class="flex items-center">
-          <span class="shortcut-key bg-[#f0f0f0] border! border-[#d9d9d9]! rounded-sm px-1.5 py-0.5 text-[11px] text-[#8c8c8c]">ESC</span>
+        <div class="vis:flex vis:items-center">
+          <span class="shortcut-key vis:bg-[#f0f0f0] vis:border! vis:border-[#d9d9d9]! vis:rounded-sm vis:px-1.5 vis:py-0.5 vis:text-[11px] vis:text-[#8c8c8c]">ESC</span>
         </div>
       </div>
 
-      <div class="max-h-120 overflow-y-auto py-3 px-0 flex flex-col">
+      <div class="vis:max-h-120 vis:overflow-y-auto vis:py-3 vis:px-0 vis:flex vis:flex-col">
         <div v-if="loading" class="loading-state">
           <a-spin />
         </div>

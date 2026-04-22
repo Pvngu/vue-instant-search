@@ -87,7 +87,7 @@ const handleToggleFavorite = (event?: MouseEvent) => {
             <span class="item-title">{{ title }}</span>
           </slot>
 
-          <a-tag v-if="status" :color="status.color" class="status-tag rounded-xl! ml-2!">
+          <a-tag v-if="status" :color="status.color" class="status-tag vis:rounded-xl! vis:ml-2!">
             {{ status.name }}
           </a-tag>
         </div>
