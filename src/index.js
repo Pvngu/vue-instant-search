@@ -1,10 +1,5 @@
-import './style.css'
-import GlobalSearchModal from './components/GlobalSearchModal.vue'
+import './lib.css'
 
-export { GlobalSearchModal }
-
-export default {
-    install(app) {
-        app.component('GlobalSearchModal', GlobalSearchModal)
-    }
-}
+export {
+    default as GlobalSearchModal
+} from './components/GlobalSearchModal.vue'
