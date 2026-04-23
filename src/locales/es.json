@@ -1,0 +1,13 @@
+{
+  "vis": {
+    "global_search": {
+      "placeholder": "Escriba para buscar",
+      "empty_state": "Escriba para comenzar a buscar.",
+      "results_empty_state": "No se encontraron resultados para \"{query}\".",
+      "favorites": "Favoritos",
+      "recent": "Recientes",
+      "add_to_favorites": "Agregar a favoritos",
+      "remove_from_favorites": "Eliminar de favoritos"
+    }
+  }
+}

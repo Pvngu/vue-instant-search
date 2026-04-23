@@ -3,8 +3,9 @@ import 'ant-design-vue/dist/reset.css'
 import './style.css'
 import App from './App.vue'
 import en from './locales/en.json'
+import es from './locales/es.json'
 
-const dictionaries = { en }
+const dictionaries = { en, es }
 
 const resolveLocale = () => {
 	if (typeof document !== 'undefined' && document.documentElement?.lang) {
