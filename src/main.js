@@ -4,6 +4,7 @@ import './style.css'
 import App from './App.vue'
 import en from './locales/en.json'
 import es from './locales/es.json'
+import { InstantSearchI18n } from './plugin'
 
 const dictionaries = { en, es }
 
@@ -52,13 +53,16 @@ const dictionary = dictionaries[locale] || en
 
 const app = createApp(App)
 
-app.config.globalProperties.$t = (key, fallbackOrParams, maybeParams) => {
-	const hasFallback = typeof fallbackOrParams === 'string'
-	const fallback = hasFallback ? fallbackOrParams : key
-	const params = hasFallback ? maybeParams : fallbackOrParams
+// Use the new plugin architecture
+app.use(InstantSearchI18n, {
+	translate: (key, fallbackOrParams, maybeParams) => {
+		const hasFallback = typeof fallbackOrParams === 'string'
+		const fallback = hasFallback ? fallbackOrParams : key
+		const params = hasFallback ? maybeParams : fallbackOrParams
 
-	const baseMessage = lookup(dictionary, key) ?? lookup(en, key) ?? fallback
-	return interpolate(String(baseMessage), params)
-}
+		const baseMessage = lookup(dictionary, key) ?? lookup(en, key) ?? fallback
+		return interpolate(String(baseMessage), params)
+	}
+})
 
 app.mount('#app')

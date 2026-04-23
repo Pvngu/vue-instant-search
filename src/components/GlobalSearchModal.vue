@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch, getCurrentInstance } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import type { PropType } from 'vue'
 import { Modal as AModal, Spin as ASpin } from 'ant-design-vue'
 import { SearchOutlined } from '@ant-design/icons-vue'
@@ -21,6 +21,8 @@ export type {
   ToggleFavoritePayload,
 } from './global-search/types'
 
+import { useTranslation } from '../utils/i18n'
+
 const props = defineProps({
   open: { type: Boolean, required: true },
   query: { type: String, default: '' },
@@ -32,6 +34,10 @@ const props = defineProps({
   closeOnSelect: { type: Boolean, default: true },
   emptyState: { type: String, default: undefined },
   resultsEmptyState: { type: String, default: undefined },
+  favoritesLabel: { type: String, default: undefined },
+  recentLabel: { type: String, default: undefined },
+  addToFavoritesLabel: { type: String, default: undefined },
+  removeFromFavoritesLabel: { type: String, default: undefined },
   getItemKey: {
     type: Function as PropType<(item: unknown, meta: SearchItemMeta) => string | number>,
     default: undefined,
@@ -52,12 +58,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:open', 'update:query', 'search-input', 'select', 'toggle-favorite', 'close'])
 
-const instance = getCurrentInstance()
-const globalT = instance?.appContext.config.globalProperties.$t
-
-const t = (key: string, fallback: string, params?: any) => {
-  return globalT ? globalT(key, fallback, params) : fallback
-}
+const { t } = useTranslation()
 
 const searchInputRef = ref<HTMLInputElement | null>(null)
 const resultsListRef = ref<HTMLElement | null>(null)
@@ -121,10 +122,10 @@ const favoriteActionTitle = (entry: FlatEntry) => {
   const isInCategory = entry.category === 'favorites'
 
   if (isInCategory || isFavorited) {
-    return t('vis.global_search.remove_from_favorites', 'Remove from favorites')
+    return props.removeFromFavoritesLabel ?? t('vis.global_search.remove_from_favorites', 'Remove from favorites')
   }
 
-  return t('vis.global_search.add_to_favorites', 'Add to favorites')
+  return props.addToFavoritesLabel ?? t('vis.global_search.add_to_favorites', 'Add to favorites')
 }
 
 const focusSearchInput = async () => {
@@ -307,7 +308,7 @@ defineExpose({
 
         <div v-else ref="resultsListRef" class="results-list">
           <template v-if="!query && hasFavorites">
-            <div class="results-group-title">{{ t('vis.global_search.favorites', 'Favorites') }}</div>
+            <div class="results-group-title">{{ favoritesLabel ?? t('vis.global_search.favorites', 'Favorites') }}</div>
 
             <GlobalSearchResultItem
               v-for="(entry, index) in favoriteEntries"
@@ -343,7 +344,7 @@ defineExpose({
 
           <template v-for="section in resultSections" :key="section.group.key">
             <div class="results-group-title">
-              {{ section.group.label }} <span v-if="!query" class="recent-badge">{{ t('vis.global_search.recent', 'Recent') }}</span>
+              {{ section.group.label }} <span v-if="!query" class="recent-badge">{{ recentLabel ?? t('vis.global_search.recent', 'Recent') }}</span>
             </div>
 
             <GlobalSearchResultItem
