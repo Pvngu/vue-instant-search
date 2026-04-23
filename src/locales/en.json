@@ -1,8 +1,13 @@
 {
-  "common": {
-    "add": "Add",
-    "close": "Close",
-    "edit": "Edit",
-    "delete": "Delete"
+  "vis": {
+    "global_search": {
+      "placeholder": "Type to search",
+      "empty_state": "Type to start searching.",
+      "results_empty_state": "No results found for \"{query}\".",
+      "favorites": "Favorites",
+      "recent": "Recent",
+      "add_to_favorites": "Add to favorites",
+      "remove_from_favorites": "Remove from favorites"
+    }
   }
 }

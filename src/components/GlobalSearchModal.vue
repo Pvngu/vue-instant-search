@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, nextTick, ref, watch, getCurrentInstance } from 'vue'
 import type { PropType } from 'vue'
 import { Modal as AModal, Spin as ASpin } from 'ant-design-vue'
 import { SearchOutlined } from '@ant-design/icons-vue'
@@ -26,12 +26,12 @@ const props = defineProps({
   query: { type: String, default: '' },
   favorites: { type: Array as PropType<Array<SearchGroup>>, default: () => [] },
   results: { type: Array as PropType<Array<SearchGroup>>, default: () => [] },
-  placeholder: { type: String, default: 'Type to search' },
+  placeholder: { type: String, default: undefined },
   loading: { type: Boolean, default: false },
   showFavoriteToggle: { type: Boolean, default: true },
   closeOnSelect: { type: Boolean, default: true },
-  emptyState: { type: String, default: 'Type to start searching.' },
-  resultsEmptyState: { type: String, default: 'No results found for "{query}".' },
+  emptyState: { type: String, default: undefined },
+  resultsEmptyState: { type: String, default: undefined },
   getItemKey: {
     type: Function as PropType<(item: unknown, meta: SearchItemMeta) => string | number>,
     default: undefined,
@@ -51,6 +51,13 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:open', 'update:query', 'search-input', 'select', 'toggle-favorite', 'close'])
+
+const instance = getCurrentInstance()
+const globalT = instance?.appContext.config.globalProperties.$t
+
+const t = (key: string, fallback: string, params?: any) => {
+  return globalT ? globalT(key, fallback, params) : fallback
+}
 
 const searchInputRef = ref<HTMLInputElement | null>(null)
 const resultsListRef = ref<HTMLElement | null>(null)
@@ -91,7 +98,10 @@ const activeItem = computed(() => {
 const hasFavorites = computed(() => favoriteEntries.value.length > 0)
 
 const resolveResultsMessage = () => {
-  return props.resultsEmptyState.replace('{query}', props.query)
+  if (props.resultsEmptyState) {
+    return props.resultsEmptyState.replace('{query}', props.query)
+  }
+  return t('vis.global_search.results_empty_state', 'No results found for "{query}".', { query: props.query })
 }
 
 const getItemTitle = (entry: FlatEntry) => {
@@ -107,11 +117,14 @@ const isItemFavorited = (entry: FlatEntry) => {
 }
 
 const favoriteActionTitle = (entry: FlatEntry) => {
-  if (entry.category === 'favorites') {
-    return 'Remove from favorites'
+  const isFavorited = isItemFavorited(entry)
+  const isInCategory = entry.category === 'favorites'
+
+  if (isInCategory || isFavorited) {
+    return t('vis.global_search.remove_from_favorites', 'Remove from favorites')
   }
 
-  return isItemFavorited(entry) ? 'Remove from favorites' : 'Add to favorites'
+  return t('vis.global_search.add_to_favorites', 'Add to favorites')
 }
 
 const focusSearchInput = async () => {
@@ -266,7 +279,7 @@ defineExpose({
           ref="searchInputRef"
           :value="query"
           class="vis:flex-1 vis:border-0 vis:outline-0 vis:text-lg! vis:bg-transparent vis:text-gray-700 vis:placeholder:text-gray-300!"
-          :placeholder="placeholder"
+          :placeholder="placeholder ?? t('vis.global_search.placeholder', 'Type to search')"
           @keydown="handleInputKeydown"
           @input="handleSearch"
         />
@@ -282,7 +295,7 @@ defineExpose({
 
         <div v-else-if="flatResults.length === 0 && !query" class="empty-state">
           <slot name="empty">
-            {{ emptyState }}
+            {{ emptyState ?? t('vis.global_search.empty_state', 'Type to start searching.') }}
           </slot>
         </div>
 
@@ -294,7 +307,7 @@ defineExpose({
 
         <div v-else ref="resultsListRef" class="results-list">
           <template v-if="!query && hasFavorites">
-            <div class="results-group-title">Favorites</div>
+            <div class="results-group-title">{{ t('vis.global_search.favorites', 'Favorites') }}</div>
 
             <GlobalSearchResultItem
               v-for="(entry, index) in favoriteEntries"
@@ -330,7 +343,7 @@ defineExpose({
 
           <template v-for="section in resultSections" :key="section.group.key">
             <div class="results-group-title">
-              {{ section.group.label }} <span v-if="!query" class="recent-badge">Recent</span>
+              {{ section.group.label }} <span v-if="!query" class="recent-badge">{{ t('vis.global_search.recent', 'Recent') }}</span>
             </div>
 
             <GlobalSearchResultItem
