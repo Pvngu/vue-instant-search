@@ -1,57 +1,76 @@
-# Vue 3 + Vite
+# vue-instant-search
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Reusable Vue 3 global search UI components focused on controlled state, grouped results, and parent-owned business logic.
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## Installation
 
-## GlobalSearchModal
+```bash
+npm install vue-instant-search
+```
 
-`GlobalSearchModal` is a controlled Vue 3 component for building app-wide search palettes without coupling the UI to routing or data fetching.
-
-### Import
+## Import
 
 ```ts
 import { GlobalSearchModal } from 'vue-instant-search'
 ```
 
+## GlobalSearchModal
+
+`GlobalSearchModal` is a controlled component. It does not fetch data or navigate by itself. The parent controls query state, result groups, and actions.
+
 ### Props
 
-- `open: boolean` - Controls modal visibility.
-- `query: string` - Controlled search text.
-- `favorites: SearchGroup[]` - Grouped favorite items.
-- `results: SearchGroup[]` - Grouped search results.
-- `placeholder: string` - Search input placeholder.
-- `loading: boolean` - Shows a loading state.
-- `showFavoriteToggle: boolean` - Enables the built-in favorite action button.
-- `closeOnSelect: boolean` - Closes the modal after selection.
-- `emptyState: string` - Fallback state when no groups are provided.
-- `resultsEmptyState: string` - Empty state text for result groups.
-- `getItemKey(item, meta)` - Returns a stable key for rendering.
-- `getItemTitle(item, meta)` - Returns the primary label shown in the default item layout.
-- `getItemSubtitle(item, meta)` - Returns the secondary label shown in the default item layout.
-- `isFavorite(item, meta)` - Returns whether an item is currently favorited.
+- `open: boolean` (required): controls modal visibility.
+- `query: string`: controlled search text.
+- `favorites: SearchGroup[]`: favorite groups shown when `query` is empty.
+- `results: SearchGroup[]`: result groups shown for current query.
+- `placeholder: string`: search input placeholder.
+- `loading: boolean`: toggles loading state.
+- `showFavoriteToggle: boolean`: shows the built-in star button.
+- `closeOnSelect: boolean`: closes modal after item selection.
+- `emptyState: string`: text shown when there is no query and no data.
+- `resultsEmptyState: string`: text shown when query has no results. Supports `{query}` placeholder.
+- `getItemKey(item, meta)`: custom key extractor.
+- `getItemTitle(item, meta)`: custom title extractor.
+- `getItemSubtitle(item, meta)`: custom subtitle extractor.
+- `isFavorite(item, meta)`: custom favorite detector.
 
 ### Events
 
-- `update:open` - Emitted when the modal should open or close.
-- `update:query` - Emitted when the search input changes.
-- `search-input` - Emitted for each user input change.
-- `select` - Emitted when the active item is chosen.
-- `toggle-favorite` - Emitted when the favorite action is triggered.
-- `close` - Emitted when the modal is dismissed.
+- `update:open` with `boolean`.
+- `update:query` with `string`.
+- `search-input` with `string`.
+- `select` with `SearchSelectPayload`.
+- `toggle-favorite` with `ToggleFavoritePayload`.
+- `close` with no payload.
 
 ### Slots
 
-- `loading` - Custom loading state.
-- `empty` - Custom empty state when no groups are available.
-- `footer` - Footer area beneath the results.
-- `group-header` - Custom group header rendering.
-- `item` - Full item rendering override.
-- `item-icon` - Icon/avatar area inside the default item layout.
-- `item-title` - Primary label inside the default item layout.
-- `item-subtitle` - Secondary label inside the default item layout.
-- `item-actions` - Right-side actions, including favorite toggles.
+- `empty`: replaces empty state (no query + no items).
+- `empty-search`: replaces empty-query-results state. Slot props: `{ query }`.
+- `item`: full row override.
+- `item-icon`: icon/avatar area override.
+- `item-title`: title area override.
+- `item-subtitle`: subtitle area override.
+- `item-actions`: right-side actions override.
 
-### Example flow
+### Types
 
-The demo app in `src/App.vue` shows how to keep the component fully controlled from the parent: the parent owns the query, filters the sample dataset, groups favorites and results, and handles selection/favorite updates.
+- `SearchGroup<T>`
+- `SearchItemMeta<T>`
+- `FlatEntry<T>`
+- `SearchSelectPayload<T>`
+- `ToggleFavoritePayload<T>`
+
+### Keyboard behavior
+
+- `ArrowDown`: move selection down.
+- `ArrowUp`: move selection up.
+- `Enter`: select active item.
+- `Escape`: close modal.
+
+### Notes
+
+- Favorites are rendered only when query is empty.
+- The component is optimized for parent-driven API calls and route handling.
+- See the complete usage example in `src/App.vue`.
